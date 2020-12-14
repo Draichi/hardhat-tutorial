@@ -1,17 +1,21 @@
-import { run, ethers } from "hardhat";
+import { ethers } from "hardhat";
 
-async function main() {
-    await run("compile")
+(async function main() {
+    try {
+        const [deployer] = await ethers.getSigners()
+        console.log("Deploying contract with account:", deployer.address);
+        console.log("ACcount balance:", await (await deployer.getBalance()).toString())
 
-    const accounts = await ethers.getSigners()
-    console.log("Accounts", accounts.map(a => a.address));
-    
-}
+        const Token = await ethers.getContractFactory("Token")
+        const aiToken = await Token.deploy()
 
-try {
-    main()
-    process.exit(0)
-} catch (error) {
-    console.error(error)
-    process.exit(1)
-}
+        console.log("Contract address:", aiToken.address)
+        process.exit(0)
+
+    } catch (error) {
+        console.error(error)
+        process.exit(1)
+
+    }
+
+})()
